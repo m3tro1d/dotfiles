@@ -1,0 +1,12 @@
+snippet base "Makefile base" b
+CC=${1:gcc}
+CFLAGS=${2:-Wall}
+
+all: ${3:dependencies}
+	$(CC) $(CFLAGS) -o ${4:output_file} $+
+endsnippet
+
+snippet target "Target" b
+${1:target_name}: ${2:dependencies}
+	$(CC) $(CFLAGS) ${3:-c} -o $@ $+
+endsnippet

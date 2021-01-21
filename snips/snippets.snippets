@@ -1,0 +1,13 @@
+# Snippets making snippets. How perverse!
+
+snippet h "Comment header" b
+# -------------------------- #
+# ${1:${VISUAL}}
+# -------------------------- #
+endsnippet
+
+snippet snip "snippet" b
+`!v "snippet"` ${1:trigger} "${2:description}"
+$0
+`!v "endsnippet"`
+endsnippet

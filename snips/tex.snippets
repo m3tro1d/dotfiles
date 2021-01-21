@@ -1,0 +1,84 @@
+extends texmath
+
+# -------------------------- #
+# Document structure
+# -------------------------- #
+snippet doc "document base" b
+\\documentclass\{article\}
+
+\\begin\{document\}
+$0
+\\end\{document\}
+endsnippet
+
+snippet up "usepackage" b
+\\usepackage\{$1\}
+endsnippet
+
+snippet sec "section" b
+\\section\{${1:${VISUAL}}\}
+$0
+\\newpage % section: $1
+endsnippet
+
+snippet ssec "subsection" b
+\\subsection\{${1:${VISUAL}}\}
+$0
+% subsection: $1
+endsnippet
+
+snippet sssec "subsubsection" b
+\\subsubsection\{${1:${VISUAL}}\}
+$0
+% subsubsection: $1
+endsnippet
+
+snippet nsec "nlsection" b
+\\nlsection\{${1:${VISUAL}}\}
+$0
+\\newpage % section: $1
+endsnippet
+
+# -------------------------- #
+# Text formatting
+# -------------------------- #
+snippet em "emph" w
+\\emph\{${1:${VISUAL}}\}
+endsnippet
+
+snippet bf "textbf" w
+\\textbf\{${1:${VISUAL}}\}
+endsnippet
+
+snippet tt "texttt" w
+\\texttt\{${1:${VISUAL}}\}
+endsnippet
+
+snippet it "textit" w
+\\textit\{${1:${VISUAL}}\}
+endsnippet
+
+snippet url "url from clipboard" w
+\\url\{${1:`!v @+`}\}
+endsnippet
+
+snippet ref "ref" i
+\\ref\{${1:${VISUAL}}\}
+endsnippet
+
+snippet fnt "footnote" i
+\\footnote\{${1:${VISUAL}}\}
+endsnippet
+
+# -------------------------- #
+# Environments
+# -------------------------- #
+snippet beg "environment" b
+\\begin\{$1\}
+  ${0:${VISUAL}}
+\\end\{$1\}
+endsnippet
+
+snippet li "list item" b
+\\item $0
+endsnippet

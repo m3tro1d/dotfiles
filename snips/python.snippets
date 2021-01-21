@@ -1,0 +1,20 @@
+snippet h "Comment header" b
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ${1:${VISUAL}}
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+endsnippet
+
+snippet env "Environment comment" b
+#!/usr/bin/env python3
+endsnippet
+
+snippet ifmain "If-main script base" b
+def main():
+    """Main function"""
+    ${2:pass}
+
+
+# Entry point
+if __name__ == "__main__":
+    ${1:main()}
+endsnippet

@@ -1,0 +1,41 @@
+snippet com "Comment" b
+<!-- ${1:${VISUAL}} -->
+endsnippet
+
+snippet h1 "Header 1" b
+# ${1:${VISUAL}}
+endsnippet
+
+snippet h2 "Header 2" b
+## ${1:${VISUAL}}
+endsnippet
+
+snippet h3 "Header 3" b
+### ${1:${VISUAL}}
+endsnippet
+
+snippet b "Bold"
+**${1:${VISUAL}}**
+endsnippet
+
+snippet i "Italics"
+*${1:${VISUAL}}*
+endsnippet
+
+snippet st "Strikethrough"
+~~${1:${VISUAL}}~~
+endsnippet
+
+snippet a "Hyperlink from clipboard"
+[${1:${VISUAL}}](${2:`!v @+`})
+endsnippet
+
+snippet img "Image hyperlink from clipboard"
+![${1:${VISUAL}}](${2:`!v @+`})
+endsnippet
+
+snippet code "Code block" b
+\`\`\`
+${1:${VISUAL}}
+\`\`\`
+endsnippet
