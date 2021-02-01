@@ -1,0 +1,11 @@
+snippet fun "Function" i
+function`!p snip.rv = ' ' if t[1] != '' else ''`$1($2) \{
+  $0
+\}
+endsnippet
+
+snippet funn "New format function" i
+`!p snip.rv = '(' if ',' in t[1] else ''`$1`!p snip.rv = ')' if ',' in t[1] else ''` => \{
+  $0
+\}
+endsnippet

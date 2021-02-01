@@ -7,38 +7,54 @@
 " by m3tro1d
 
 
+" Config location {{{
+" This is system-dependent
+if has('win32')
+  let $VIMCONF=$HOME . '/AppData/Local/nvim'
+else
+  let $VIMCONF=$HOME . '/.config/nvim'
+endif
+" }}}
+
 " Plugins {{{
-" https://github.com/junegunn/vim-plug
-call plug#begin('~/AppData/Local/nvim/plugged')
+" Using https://github.com/junegunn/vim-plug
+
+" Check if the plugin directory exists
+if !isdirectory($VIMCONF . '/plugged')
+  call mkdir($VIMCONF . '/plugged', 'p')
+endif
+
+call plug#begin($VIMCONF . '/plugged')
 " Appearance
 Plug 'sheerun/vim-polyglot'
 Plug 'itchyny/lightline.vim'
-Plug 'joshdick/onedark.vim'
+" Plug 'joshdick/onedark.vim'
+Plug 'sainnhe/forest-night'
+Plug 'thaerkh/vim-indentguides', { 'for': 'javascript' }
 " Project management
 Plug 'preservim/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'tpope/vim-fugitive', { 'on': ['G', 'Git', 'Gw', 'Gcommit'] }
 " Editing
 Plug 'cohama/lexima.vim'
+Plug 'SirVer/ultisnips'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-repeat'
-Plug 'SirVer/ultisnips'
 Plug 'junegunn/vim-easy-align', { 'on': '<Plug>(EasyAlign)' }
-Plug 'mattn/emmet-vim', { 'on': 'EmmetInstall' }
-" Writing prose
-Plug 'junegunn/goyo.vim', { 'on': 'Goyo' }
-Plug 'reedes/vim-colors-pencil'
 " Miscellaneous
 Plug 'vimwiki/vimwiki'
 Plug 'tpope/vim-dispatch', { 'on': ['Make', 'Dispatch'] }
-Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 call plug#end()
 " }}}
 
 " Basics {{{
 let mapleader=' '
-language en_US
 set spelllang=en_us,ru_ru
+if has('win32')
+  language en_US
+else
+  language en_US.UTF-8
+endif
 " Enable mouse only in normal mode
 set mouse=n
 " Less command history
@@ -49,28 +65,30 @@ set encoding=utf-8
 scriptencoding utf-8
 filetype plugin indent on
 " Python path
-" let g:python3_host_prog = 'C:\Users\[user_name]\AppData\Local\Programs\Python\Python39\python.exe'
+if has('win32')
+  let g:python3_host_prog = $HOME . '/AppData/Local/Programs/Python/Python39/python.exe'
+else
+  let g:python3_host_prog = '/bin/python3'
+endif
 " }}}
 
 " Behavior {{{
 " Priority of end-of-line formats
-set fileformats=dos,unix,mac
+if has('win32')
+  set fileformats=dos,unix,mac
+else
+  set fileformats=unix,mac,dos
+endif
 " Priority of encodings
 set fileencodings=utf-8,cp1251,cp866,koi8-r
 " Automatically hide buffer when it's unsaved (also allows to use :bufdo)
 set hidden
 " Ask if there are unsaved files
 set confirm
-" Messages settings
-set shortmess=filmnrx
-" Shorter delays (in ms)
-set updatetime=300
-" Store swap files
-set swapfile
-set directory=$HOME/AppData/Local/nvim/.swap//
-if !isdirectory(expand(&directory))
-  call mkdir(expand(&directory), 'p')
-endif
+" Longer updatetime (def: 4000 ms) leads to delays and poor UX
+set updatetime=50
+" Disable swap files
+set noswapfile
 " Disable backup files
 set nobackup nowritebackup
 " Do not store netrw history
@@ -79,14 +97,18 @@ let g:netrw_dirhistmax = 0
 set wildmenu wildignorecase
 set wildmode=longest,list,full
 set wildignore+=*.exe,*.o,*.obj
-set wildignore+=.git/**,__pycache__/**,node_modules/**
+set wildignore+=**/.git/**,**/__pycache__/**,**/node_modules/**
+" Don't show insert completion messages
+set shortmess+=c
+" Recursive :find in the current directory
+set path+=**
 " Don't jump to matching pairs
 set noshowmatch
 " Split windows at the bottom and right
 set splitbelow splitright
 " Don't update screen while running macros (makes them faster & uses less resources)
 set lazyredraw
-" Jump to the buffer instead of switching if it's already opened
+" Jump to the buffer window instead of switching if it's already opened
 set switchbuf=useopen
 " Preview for :s command
 set inccommand=nosplit
@@ -104,7 +126,7 @@ autocmd FocusGained,BufEnter * checktime
 " Enable modeline only for my files (for security purposes)
 set nomodeline
 set modelines=1
-autocmd BufRead,BufNewFile ~/AppData/Local/nvim/* setlocal modeline
+autocmd BufRead,BufNewFile $VIMCONF/* setlocal modeline
 " Auto-resize splits when Vim gets resized
 autocmd VimResized * wincmd=
 " Turn off paste when leaving insert mode
@@ -114,9 +136,11 @@ autocmd InsertLeave * set nopaste
 " Appearance {{{
 " Theme settings
 syntax enable
-set termguicolors
+if has('termguicolors')
+  set termguicolors
+endif
 set background=dark
-colorscheme onedark
+colorscheme forest-night
 " Disable cursor blinking in UI
 set guicursor+=a:blinkon0
 " Line numbering
@@ -127,21 +151,17 @@ set ruler
 set laststatus=2
 " Hide mouse when typing
 set mousehide
-" Height of the cmd line
+" Height of the cmd line (bigger helps avoiding hit-enter prompt)
 set cmdheight=1
 " Show commands in bottom-right corner
 set showcmd
-" Disable startup message
-set shortmess=I
 " Don't show current mode
 set noshowmode
 " Set the window's title to the current filename
 set title titlestring=%{expand(\"%:t\")}
 " Disable scrollbars & toolbars in GUI
-set guioptions-=r
-set guioptions-=R
-set guioptions-=l
-set guioptions-=L
+set guioptions-=r guioptions-=R
+set guioptions-=l guioptions-=L
 set guioptions-=T
 " }}}
 
@@ -190,8 +210,10 @@ set scrolloff=1 sidescrolloff=1
 " Mappings {{{
 " Change and delete to the blackhole register
 nnoremap c "_c
+xnoremap c "_c
 nnoremap C "_C
-noremap x "_x
+nnoremap x "_x
+xnoremap x "_x
 nnoremap X "_X
 " Intuitive yank (like D)
 nnoremap Y y$
@@ -200,9 +222,9 @@ vnoremap p pgvy
 " Intuitive line movement (if count is not provided, move by displayed lines)
 nnoremap <expr> j v:count ? 'j' : 'gj'
 nnoremap <expr> k v:count ? 'k' : 'gk'
-" Macros tricks
+" Cool macro trick
 nnoremap Q @q
-xnoremap Q :norm @q<CR>
+xnoremap Q :<C-u>norm @q<CR>
 " Faster movement between windows
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
@@ -222,29 +244,19 @@ noremap <leader>p "+p
 " Toggle paste mode
 set pastetoggle=<F2>
 " Some tricks for the buffers
-nnoremap <silent> <leader>bn :bnext<CR>
-nnoremap <silent> <leader>bp :bprevious<CR>
-nnoremap <silent> <leader>bb :buffers<CR>:b<Space>
-nnoremap <silent> <leader>bd :bwipeout!<CR>
+nnoremap <silent> <leader>bn :<C-u>bnext<CR>
+nnoremap <silent> <leader>bp :<C-u>bprevious<CR>
+nnoremap <silent> <leader>bb :<C-u>buffers<CR>:b<Space>
+nnoremap <silent> <leader>bd :<C-u>bwipeout!<CR>
 " Toggle spell check
-nnoremap <silent> <leader>s :setlocal spell!<CR>
-" Fast vimrc access
-nnoremap <silent> <leader>ve :e $MYVIMRC<CR>
-nnoremap <silent> <leader>vs :so $MYVIMRC<CR>
+nnoremap <silent> <leader>s :<C-u>setlocal spell!<CR>
 " Comfortable editing in command mode
 cnoremap <C-A> <Home>
 cnoremap <C-E> <End>
-cnoremap <C-K> <C-U>
 cnoremap <C-P> <Up>
 cnoremap <C-N> <Down>
 " Get current directory in command mode
 cnoremap %% <C-r>=expand('%:p:h')<CR>\
-" Some useful stuff for the terminal
-tnoremap <Esc> <C-\><C-n>
-tnoremap <C-h> <C-\><C-n><C-w>h
-tnoremap <C-j> <C-\><C-n><C-w>j
-tnoremap <C-k> <C-\><C-n><C-w>k
-tnoremap <C-l> <C-\><C-n><C-w>l
 " }}}
 
 " Russian keymap {{{
@@ -256,13 +268,13 @@ autocmd InsertLeave * set iminsert=0
 " }}}
 
 " Some custom functions and commands {{{
-source ~/AppData/Local/nvim/functions.vim
+source $VIMCONF/functions.vim
 " }}}
 
 " Plugins settings {{{
 " Lightline
 let g:lightline = {
-      \ 'colorscheme': 'onedark',
+      \ 'colorscheme': 'forest_night',
       \ 'mode_map': { 'c': 'NORMAL' },
       \ 'active': {
       \   'left': [ [ 'keymap', 'mode', 'paste' ],
@@ -283,6 +295,8 @@ endfunction
 function! LightlineKeymap()
   return &iminsert == 1 ? 'RU' : ''
 endfunction
+call lightline#init()
+call lightline#colorscheme()
 
 " UltiSnips
 let g:UltiSnipsExpandTrigger = '<tab>'
@@ -290,7 +304,7 @@ let g:UltiSnipsJumpForwardTrigger = '<tab>'
 let g:UltiSnipsJumpBackwardTrigger = '<s-tab>'
 let g:UltiSnipsListSnippets = '<c-tab>'
 let g:UltiSnipsEditSplit = 'vertical'
-let g:UltiSnipsSnippetDirectories = [$HOME.'/AppData/Local/nvim/snips']
+let g:UltiSnipsSnippetDirectories = [$VIMCONF . '/snips']
 
 " NERDTree
 autocmd bufenter * if (winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree()) | q | endif
@@ -304,67 +318,42 @@ let NERDTreeAutoDeleteBuffer = 1
 let NERDTreeIgnore = ['\.git$']
 nnoremap <silent> <leader>n :NERDTreeToggle<CR>
 
-" Undotree
-let g:undotree_HelpLine = 0
-let g:undotree_WindowLayout = 4
-let g:undotree_ShortIndicators = 1
-let g:undotree_SplitWidth = 24
-nnoremap <leader>u :UndotreeToggle<CR>
-
-" Emmet
-let g:user_emmet_install_global = 0
-autocmd FileType html,css EmmetInstall
-let g:user_emmet_leader_key = '<C-z>'
-
 " vim-easy-align
 nmap ga <Plug>(EasyAlign)
 xmap ga <Plug>(EasyAlign)
 
 " vimwiki
-let g:vimwiki_list = [{'path': 'D:\Documents\vimwiki\',
-      \ 'ext': '.wiki',
-      \ 'auto_diary_index': 1}]
+if has('win32')
+  let g:vimwiki_list = [{'path': 'D:\Documents\vimwiki\',
+        \ 'ext': '.wiki',
+        \ 'auto_diary_index': 1}]
+else
+  let g:vimwiki_list = [{'path': '~/Documents/vimwiki/',
+        \ 'ext': '.wiki',
+        \ 'auto_diary_index': 1}]
+endif
 let g:vimwiki_ext2syntax = {'.wiki': 'default'}
 
-" Pencil theme
-let g:pencil_spell_undercurl = 0
-
-" Goyo
-function! s:goyo_enter()
-  call ProseMode()
-  set background=light
-  colorscheme pencil
-endfunction
-function! s:goyo_leave()
-  call CodeMode()
-  set background=dark
-  colorscheme onedark
-endfunction
-autocmd! User GoyoEnter nested call <SID>goyo_enter()
-autocmd! User GoyoLeave nested call <SID>goyo_leave()
+" vim-indentguides
+let g:indentguides_ignorelist = ['text', 'help']
 " }}}
 
 " General files settings {{{
-" Disable automatic commenting on newline
-autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
-" Automatically turn on spelling in git commit message
+" Turn off automatic text formatting (both text and comments)
+autocmd BufRead,BufNewFile * setlocal formatoptions-=t formatoptions-=c
+" Turn off automatic comment insertion
+autocmd BufRead,BufNewFile * setlocal formatoptions-=r formatoptions-=c formatoptions-=o
+" Automatically turn on spelling for the needed file types
+autocmd BufRead,BufNewFile *.md setlocal spell
 autocmd BufRead,BufNewFile COMMIT_EDITMSG setlocal spell
 " Sometimes the filetype is set incorrectly
 autocmd BufRead,BufNewFile *.tex set filetype=tex
-autocmd BufRead,BufNewFile *.asm,*.inc set filetype=nasm
 " TeX type
 let g:tex_flavor = 'latex'
 " }}}
 
 " Specific filetypes settings {{{
 " Specific file mappings start with <leader>f
-if has('nvim')
-  augroup terminal
-    autocmd!
-    autocmd TermOpen * setlocal nonumber norelativenumber
-  augroup END
-endif
-
 augroup python
   autocmd!
   autocmd FileType python setlocal expandtab
@@ -385,18 +374,8 @@ augroup tex
   autocmd FileType tex nnoremap <buffer> <silent> <leader>fc :up \| cd %:h \| !pdflatex "%"<CR>
   " Preview pdf
   autocmd FileType tex nnoremap <buffer> <silent> <leader>fp :!start "C:\Program Files\SumatraPDF\SumatraPDF.exe" "%:p:r.pdf"<CR><CR>
-  " Get all labels
-  autocmd FileType tex nnoremap <buffer> <silent> <leader>fl :up \| Dispatch latex-get-labels "%:p"<CR>
   " Tidy up useless files
   autocmd FileType tex nnoremap <buffer> <silent> <leader>ft :cd %:h \| Dispatch! latex-tidyup "%"<CR><CR>
-augroup END
-
-augroup markdown
-  autocmd!
-  " Markdown-to-pdf with pandoc
-  autocmd FileType markdown nnoremap <buffer> <silent> <leader>fc :up \| Dispatch! pandoc "%:p" -f markdown -t pdf -s -o "%:p:r.pdf"<CR>
-  " Preview pdf
-  autocmd FileType markdown nnoremap <buffer> <silent> <leader>fp :!start "C:\Program Files\SumatraPDF\SumatraPDF.exe" "%:p:r.pdf"<CR><CR>
 augroup END
 
 augroup snippets
