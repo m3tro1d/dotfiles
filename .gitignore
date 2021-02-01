@@ -1,4 +1,5 @@
-# Swap files
-/.swap
-# Plugins
-/plugged
+# Vim plugins
+nvim/plugged/
+
+# mpv watch later files
+mpv/watch_later/
