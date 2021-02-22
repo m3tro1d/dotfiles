@@ -1,0 +1,19 @@
+snippet base "Script base" b
+@echo off
+
+:arguments
+$2
+
+$0
+goto done
+
+:error
+echo $1
+
+:done
+endsnippet
+snippet for "For loop" b
+for %%${1:f} in (${2:masks}) do (
+  $0
+)
+endsnippet

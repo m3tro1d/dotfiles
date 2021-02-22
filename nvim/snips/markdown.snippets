@@ -1,40 +1,48 @@
-snippet com "Comment" b
-<!-- ${1:${VISUAL}} -->
+snippet props "YAML properties" b
+---
+title: $1
+author: $2
+date: ${3:`!v strftime('%d.%m.%y')`}
+---
+$0
 endsnippet
 
 snippet h1 "Header 1" b
 # ${1:${VISUAL}}
+$0
 endsnippet
 
 snippet h2 "Header 2" b
 ## ${1:${VISUAL}}
+$0
 endsnippet
 
 snippet h3 "Header 3" b
 ### ${1:${VISUAL}}
+$0
 endsnippet
 
-snippet b "Bold"
+snippet b "Bold" w
 **${1:${VISUAL}}**
 endsnippet
 
-snippet i "Italics"
+snippet i "Italics" w
 *${1:${VISUAL}}*
 endsnippet
 
-snippet st "Strikethrough"
+snippet st "Strikethrough" w
 ~~${1:${VISUAL}}~~
 endsnippet
 
-snippet a "Hyperlink from clipboard"
+snippet a "Hyperlink from clipboard" w
 [${1:${VISUAL}}](${2:`!v @+`})
 endsnippet
 
-snippet img "Image hyperlink from clipboard"
+snippet img "Image hyperlink from clipboard" w
 ![${1:${VISUAL}}](${2:`!v @+`})
 endsnippet
 
-snippet cl "Checklist" b
+snippet cl "Checklist item" b
 - [${1: }] $0
 endsnippet
 

@@ -6,8 +6,14 @@ snippet h "Comment header" b
 # -------------------------- #
 endsnippet
 
+snippet global "Global scope" b
+`!v "global"` !p
+$0
+`!v "endglobal"`
+endsnippet
+
 snippet snip "snippet" b
-`!v "snippet"` ${1:trigger} "${2:description}"
+`!v "snippet"` ${1:trigger} "${2:description}"`!p snip.rv = ' ' if t[3] != '' else ''`$3
 $0
 `!v "endsnippet"`
 endsnippet

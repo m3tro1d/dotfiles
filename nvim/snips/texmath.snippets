@@ -2,78 +2,89 @@
 # https://castel.dev/post/lecture-notes-1/
 
 
-snippet mk "inline math" w
+snippet mk "Inline math" w
 \\(${1:${VISUAL}}\\)
 endsnippet
 
-snippet dm "display math" w
+snippet dm "Display math" w
 \\[
   $1
 \\]
 endsnippet
 
-snippet sub "subscript" i
+snippet sub "Subscript" i
 _\{$1\}
 endsnippet
 
-snippet "([A-Za-z])([0-9])" "faster subscript" Arw
+snippet "([A-Za-z])([0-9])" "Faster subscript" Arw
 `!p snip.rv = "{}_{}".format(match.group(1), match.group(2))`
 endsnippet
 
-snippet sup "superscript" i
+snippet sup "Superscript" i
 ^\{$1\}
 endsnippet
 
-snippet sqrt "square root" w
+snippet sqrt "Square root" i
 \\sqrt\{$1\}
 endsnippet
 
-snippet "(\d|\w)root" "nth root" rw
+snippet "(\d|\w)root" "N-th root" rw
 \\sqrt[`!p snip.rv = match.group(1)`]\{$1\}
 endsnippet
 
-snippet "((\(\))|(\[\])|({}))d" "dynamic brackets" rw
+snippet "((\(\))|(\[\])|({}))d" "Dynamic brackets" rw
 \\left`!p snip.rv = ('\\' if match.group(1)[0] == '{' else '') + match.group(1)[0]` ${1:${VISUAL}} \\right`!p snip.rv = ('\\' if match.group(1)[1] == '}' else '') + match.group(1)[1]`
 endsnippet
 
-snippet // "simple fraction" i
+snippet // "Simple fraction" i
 \\frac\{${1:${VISUAL}}\}\{$2\}
 endsnippet
 
-snippet "^.*\)/" "() fraction" rw
+snippet "^.*\)/" "Fraction from parentheses" rw
 `!p
 stripped = match.string[:-1]
 depth = 0
 i = len(stripped) - 1
 while True:
-	if stripped[i] == ')': depth += 1
-	if stripped[i] == '(': depth -= 1
-	if depth == 0: break;
-	i -= 1
+		if stripped[i] == ')':
+				depth += 1
+		if stripped[i] == '(':
+				depth -= 1
+		if depth == 0:
+				break;
+		i -= 1
 snip.rv = stripped[:i] + "\\frac{" + stripped[i+1:-1] + "}"
 `\{$1\}$0
 endsnippet
 
-snippet lim "limit" i
+snippet lim "Limit" i
 \\lim_\{${1:x\\to\\infty}\}$2
 endsnippet
 
-snippet sum "sum" i
+snippet sum "Algebraic sum" i
 \\sum_\{${1:n=1}\}^\{${2:\\infty}\}$3
+endsnippet
+
+snippet int "Undefined integral" i
+\\int $0
 endsnippet
 
 # Upper limits
 # snippet int "integral"
 # \\int\\limits_\{$1\}^\{$2\} $3 \\,\\mathrm\{d\}x
 # endsnippet
-snippet int "integral" i
-\\int_\{$1\}^\{$2\} $3 \\,dx
+snippet intd "Defined integral" i
+\\int_\{$1\}^\{$2\} $0
 endsnippet
 
-snippet bb "number set" i
+snippet bb "Number set letter" i
 \\mathbb\{${1:Q}\}
 endsnippet
 
-snippet txt "\text{}" i
+snippet fr "Gothic letter" i
+\\mathfrak\{${1:F}\}
+endsnippet
+
+snippet txt "Text in equations" i
 \\text\{${1:${VISUAL}}\}
 endsnippet

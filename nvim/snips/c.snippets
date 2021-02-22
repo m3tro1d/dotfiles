@@ -1,6 +1,16 @@
-# -------------------------- #
-# Program structure
-# -------------------------- #
+snippet #inc "#include directive" b
+#include <${1:stdio.h}>
+endsnippet
+
+snippet header "Header format" b
+#ifndef ${1:`!v toupper(expand("%:t:r"))`_H_}
+#define $1
+
+$0
+
+#endif /* #ifndef $1 */
+endsnippet
+
 snippet main "main()" b
 int main(void)
 {
@@ -17,18 +27,8 @@ int main(int argc, char **argv)
 }
 endsnippet
 
-# -------------------------- #
-# Macros
-# -------------------------- #
-snippet #inc "#include directive" b
-#include <${1:stdio}.h>
-endsnippet
-
-snippet header "header format" b
-#ifndef ${1:`!v toupper(expand("%:t:r"))`_H_}
-#define $1
-
-$0
-
-#endif /* #ifndef $1 */
+snippet struct "Struct typedef" b
+typedef struct {
+  $2
+} $1;
 endsnippet

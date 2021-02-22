@@ -1,11 +1,32 @@
+snippet env "Environment comment" b
+#!/usr/bin/env node
+$0
+endsnippet
+
+snippet h "Comment header" b
+/**
+ * ${1:${VISUAL}}
+ */
+endsnippet
+
 snippet fun "Function" i
 function`!p snip.rv = ' ' if t[1] != '' else ''`$1($2) \{
   $0
 \}
 endsnippet
 
-snippet funn "New format function" i
-`!p snip.rv = '(' if ',' in t[1] else ''`$1`!p snip.rv = ')' if ',' in t[1] else ''` => \{
+snippet funn "ES6 function" i
+`!p
+if (not t[1]) or ',' in t[1]:
+    snip.rv = '('
+else:
+    snip.rv = ''
+`$1`!p
+if (not t[1]) or ',' in t[1]:
+    snip.rv = ')'
+else:
+    snip.rv = ''
+` => \{
   $0
 \}
 endsnippet

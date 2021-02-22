@@ -1,6 +1,6 @@
 snippet base "Makefile base" b
 CC=${1:gcc}
-CFLAGS=${2:-Wall}
+CFLAGS=${2:-Wall -O2}
 
 all: ${3:dependencies}
 	$(CC) $(CFLAGS) -o ${4:output_file} $+

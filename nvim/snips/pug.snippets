@@ -1,0 +1,18 @@
+snippet b "Bold inline" w
+#[b ${1:${VISUAL}}]
+endsnippet
+
+snippet i "Italics inline" w
+#[i ${1:${VISUAL}}]
+endsnippet
+
+snippet a "Hyperlink from clipboard" w
+#[a(href="${2:`!v @+`}") ${1:${VISUAL}}]
+endsnippet
+
+snippet each "each-in loop" b
+each ${1:item} in ${2:colection}
+  $2
+else
+  ${3:(no items)}
+endsnippet
