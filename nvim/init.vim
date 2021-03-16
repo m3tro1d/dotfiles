@@ -23,36 +23,45 @@ if !isdirectory($VIMCONF . '/plugged')
   call mkdir($VIMCONF . '/plugged', 'p')
 endif
 call plug#begin($VIMCONF . '/plugged')
-" Appearance & syntax
+" Syntax
 Plug 'sheerun/vim-polyglot'
-Plug 'itchyny/lightline.vim'
+Plug 'nelsyeung/twig.vim'
+
+" Appearance
 Plug 'joshdick/onedark.vim'
+Plug 'itchyny/lightline.vim'
+Plug 'ap/vim-css-color', { 'for': 'css' }
+Plug 'gregsexton/MatchTag', { 'for': 'html' }
 
 " Project management
 Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-rhubarb', { 'on': 'GBrowse' }
+Plug 'tpope/vim-rhubarb'
 Plug 'preservim/nerdtree', { 'on': 'NERDTreeToggle' }
 
 " Editing
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
-Plug 'vim-scripts/ReplaceWithRegister'
-Plug 'cohama/lexima.vim'
+Plug 'vim-scripts/argtextobj.vim'
+Plug 'jiangmiao/auto-pairs'
 Plug 'SirVer/ultisnips'
 Plug 'mattn/emmet-vim', { 'on': 'EmmetInstall' }
-Plug 'tommcdo/vim-lion'
 
 " Miscellaneous utilities
 Plug 'tpope/vim-dispatch', { 'on': ['Make', 'Dispatch'] }
 Plug 'vimwiki/vimwiki'
 Plug 'ctrlpvim/ctrlp.vim'
+Plug 'terryma/vim-smooth-scroll'
 
-" Colorschemes for alternating
-" Plug 'drewtempelmeyer/palenight.vim'
+" Some colorschemes for alternating
 " Plug 'arcticicestudio/nord-vim'
+" Plug 'sainnhe/sonokai'
+" Plug 'drewtempelmeyer/palenight.vim'
 " Plug 'sainnhe/forest-night'
 " Plug 'sainnhe/gruvbox-material'
+
+" Plug 'vim-scripts/ReplaceWithRegister'
+" Plug 'cohama/lexima.vim'
 call plug#end()
 " }}}
 
@@ -65,7 +74,7 @@ else
   language en_US.UTF-8
 endif
 " Enable mouse only in normal mode
-set mouse=a
+set mouse=n
 " Less command history
 set history=500
 " Compatibility settings
@@ -75,7 +84,7 @@ scriptencoding utf-8
 filetype plugin indent on
 " Python path
 if has('win32')
-  let g:python3_host_prog = $HOME . '/AppData/Local/Programs/Python/Python39/python.exe'
+  let g:python3_host_prog = $HOME . '\AppData\Local\Programs\Python\Python39\python.exe'
 else
   let g:python3_host_prog = '/bin/python3'
 endif
@@ -121,10 +130,16 @@ set splitbelow splitright
 set lazyredraw
 " Jump to the buffer window instead of switching if it's already opened
 set switchbuf=useopen
-" Preview for :s command
-set inccommand=nosplit
+if has('nvim')
+  " Preview for :s command
+  set inccommand=nosplit
+endif
 " Treat numbers as either decimal or hex when using CTRL-A|X
 set nrformats=hex
+" Disable dangerous settings in the modeline and .exrc
+" set secure
+" Enable .exrc settings
+set exrc
 " Allow backspace in insert mode
 set backspace=indent,eol,start
 " Keeps the right amount of spaces when joining lines
@@ -158,13 +173,13 @@ set number relativenumber
 set ruler
 " Always show statusline
 set laststatus=2
-" Hide mouse when typing
+" Hide the mouse pointer when typing
 set mousehide
 " Height of the cmd line (bigger helps avoiding hit-enter prompt)
-set cmdheight=1
-" Show commands in bottom-right corner
+set cmdheight=2
+" Show current commands in the bottom-right corner
 set showcmd
-" Don't show current mode
+" Don't show current mode in the command line
 set noshowmode
 " Set the window's title to the current filename
 set title titlestring=%{expand(\'%\')}
@@ -175,7 +190,7 @@ set title titlestring=%{expand(\'%\')}
 set nohlsearch
 " Show results while typing
 set incsearch
-" Ignore case if query is lowercase (use \C to match case)
+" Ignore case if query is lowercase (use \C to force match case)
 set ignorecase smartcase
 " }}}
 
@@ -229,10 +244,13 @@ nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 " Window resizing
-nnoremap <Right> <C-w>>
-nnoremap <Left> <C-w><
-nnoremap <Up> <C-w>+
-nnoremap <Down> <C-w>-
+nnoremap <silent> <Right> :vertical resize +2<CR>
+nnoremap <silent> <Left> :vertical resize -2<CR>
+nnoremap <silent> <Up> :resize +2<CR>
+nnoremap <silent> <Down> :resize -2<CR>
+" Toggle 2 vertical and horizontal splits
+nnoremap <leader>th <C-w>t<C-w>K
+nnoremap <leader>tv <C-w>t<C-w>H
 " Copy and paste using system clipboard
 nnoremap <leader>y "+y
 xnoremap <leader>y "+y
@@ -241,15 +259,15 @@ xnoremap <leader>p "+p
 " Toggle paste mode
 set pastetoggle=<F2>
 " Some mappings for the buffers
-nnoremap ]b :bnext<CR>
-nnoremap [b :bprevious<CR>
-nnoremap ]B :blast<CR>
-nnoremap [B :bfirst<CR>
+nnoremap <silent> ]b :bnext<CR>
+nnoremap <silent> [b :bprevious<CR>
+nnoremap <silent> ]B :blast<CR>
+nnoremap <silent> [B :bfirst<CR>
 " Quickfix list bindings
-nnoremap ]q :cnext<CR>
-nnoremap [q :cprevious<CR>
-nnoremap ]Q :clast<CR>
-nnoremap [Q :cfirst<CR>
+nnoremap <silent> ]q :cnext<CR>
+nnoremap <silent> [q :cprevious<CR>
+nnoremap <silent> ]Q :clast<CR>
+nnoremap <silent> [Q :cfirst<CR>
 " Toggle spell check
 nnoremap <silent> <leader>s :<C-u>setlocal spell!<CR>
 " Comfortable editing in command mode
@@ -257,9 +275,9 @@ cnoremap <C-A> <Home>
 cnoremap <C-E> <End>
 cnoremap <C-P> <Up>
 cnoremap <C-N> <Down>
-" Get current directory in command mode
+" Get current directory in the command mode
 cnoremap %% <C-r>=expand('%:p:h')<CR>\
-" Terminal mappings for nvim
+" Terminal mappings for Neovim
 if has('nvim')
   tnoremap <Esc> <C-\><C-n>
   tnoremap <C-h> <C-\><C-n><C-w>h
@@ -278,6 +296,21 @@ autocmd settings InsertLeave * set iminsert=0
 " }}}
 
 " Some custom functions and commands {{{
+" Quickfix list toggle {{{
+function! QuickfixToggle() abort
+  for i in range(1, winnr('$'))
+    let bnum = winbufnr(i)
+    if getbufvar(bnum, '&buftype') == 'quickfix'
+      cclose
+      return
+    endif
+  endfor
+
+  copen
+endfunction
+" }}}
+nnoremap <silent> <leader>q :call QuickfixToggle()<CR>
+
 " Virtual edit (cursor beyond EOL) {{{
 function! VirtualEditToggle() abort
   if &ve == ''
@@ -317,21 +350,6 @@ function! PlaceholdersToggle() abort
   endif
 endfunction " }}}
 command! PlaceholdersToggle call PlaceholdersToggle()
-
-" Toggle quickfix window {{{
-function! QuickfixToggle() abort
-  " Close all quickfix windows, if presented
-  for i in range(1, winnr('$'))
-    let bnum = winbufnr(i)
-    if getbufvar(bnum, '&buftype') == 'quickfix'
-      cclose
-      return
-    endif
-  endfor
-  " Otherwise, open it
-  copen
-endfunction " }}}
-nnoremap <silent> <Leader>c :call QuickfixToggle()<CR>
 
 " Commands {{{
 " Soft-wrap the text for copying into the text processors
@@ -376,9 +394,9 @@ call lightline#colorscheme()
 
 " UltiSnips {{{
 let g:UltiSnipsExpandTrigger = '<tab>'
-let g:UltiSnipsJumpForwardTrigger = '<C-b>'
-let g:UltiSnipsJumpBackwardTrigger = '<C-z>'
-let g:UltiSnipsListSnippets = '<c-tab>'
+let g:UltiSnipsJumpForwardTrigger = '<tab>'
+let g:UltiSnipsJumpBackwardTrigger = '<S-tab>'
+let g:UltiSnipsListSnippets = '<C-tab>'
 let g:UltiSnipsEditSplit = 'vertical'
 let g:UltiSnipsSnippetDirectories = [$VIMCONF . '/snips']
 " }}}
@@ -397,8 +415,12 @@ let NERDTreeCascadeOpenSingleChildDir = 0
 let NERDTreeAutoDeleteBuffer = 1
 let NERDTreeIgnore = ['\.git$', 'node_modules$']
 let NERDTreeBookmarksFile = ''
-nnoremap <silent> <leader>N :NERDTreeToggle<CR>
-nnoremap <silent> <leader>n :NERDTreeFocus<CR>
+nnoremap <silent> <leader>nt :NERDTreeToggle<CR>
+nnoremap <silent> <leader>nf :NERDTreeFocus<CR>
+" }}}
+
+" NERDCommenter {{{
+let g:NERDSpaceDelims = 1
 " }}}
 
 " netrw {{{
@@ -432,22 +454,24 @@ let g:vimwiki_ext2syntax = {'.wiki': 'default'}
 
 " emmet-vim {{{
 let g:user_emmet_install_global = 0
-let g:user_emmet_mode = 'n'
-let g:user_emmet_leader_key = ','
+let g:user_emmet_leader_key = '<C-z>'
 augroup emmet
   autocmd!
-  autocmd FileType html,css,pug EmmetInstall
+  autocmd FileType html,css,pug,html.twig.js.css EmmetInstall
 augroup END
-" }}}
-
-" vim-lion {{{
-let g:lion_squeeze_spaces = 1
 " }}}
 
 " ctrlp.vim {{{
 let g:ctrlp_match_current_file = 1
 let g:ctrlp_working_path_mode = 'wra'
 let g:ctrlp_mruf_max = 25
+" }}}
+
+" vim-smooth-scroll {{{
+nnoremap <silent> <C-u> :call smooth_scroll#up(&scroll, 10, 2)<CR>
+nnoremap <silent> <C-d> :call smooth_scroll#down(&scroll, 10, 2)<CR>
+nnoremap <silent> <C-b> :call smooth_scroll#up(&scroll*2, 10, 4)<CR>
+nnoremap <silent> <C-f> :call smooth_scroll#down(&scroll*2, 10, 4)<CR>
 " }}}
 " }}}
 
@@ -474,13 +498,6 @@ augroup gitcommit " {{{
   autocmd FileType gitcommit setlocal spell
 augroup END " }}}
 
-augroup c " {{{
-  autocmd!
-  " Enable syntax folding and open all by default
-  autocmd FileType c setlocal foldmethod=syntax
-  autocmd FileType c normal zR
-augroup END " }}}
-
 augroup python " {{{
   autocmd!
   autocmd FileType python setlocal colorcolumn=80
@@ -490,7 +507,7 @@ augroup END " }}}
 
 augroup javascript " {{{
   autocmd!
-  " File navigation with 'gf'
+  " Node.js file navigation with 'gf'
   autocmd FileType javascript setlocal include=require(
   autocmd FileType javascript setlocal suffixesadd=.js
   " Run eslint with :make
@@ -516,8 +533,8 @@ augroup END " }}}
 
 augroup pascal " {{{
   autocmd!
-  autocmd FileType pascal set makeprg=fpc\ %
-  autocmd FileType pascal set errorformat+=%f(%l\\,%c)\ %m,%-G%.%#
+  autocmd FileType pascal setlocal makeprg=gpc\ %\ -o\ %:t:r
+  autocmd FileType pascal setlocal errorformat+=%f(%l\\,%c)\ %m,%-G%.%#
 augroup END " }}}
 " }}}
 

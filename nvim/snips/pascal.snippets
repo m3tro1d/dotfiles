@@ -1,0 +1,49 @@
+snippet program "program block"
+PROGRAM $1(INPUT, OUTPUT);
+BEGIN {$1}
+  $0
+END. {$1}
+endsnippet
+
+snippet unit "unit block"
+UNIT $1
+INTERFACE
+  $0
+
+IMPLEMENTATION
+
+BEGIN {$1}
+END. {$1}
+endsnippet
+
+snippet begin "begin-end block" b
+BEGIN
+  $0
+END$1
+endsnippet
+
+snippet if "if clause" b
+IF $1
+THEN
+  $0
+endsnippet
+
+snippet while "while loop" b
+WHILE $1
+DO
+  $0
+endsnippet
+
+snippet procedure "procedure declaration" b
+PROCEDURE $1;
+BEGIN {$1}
+  $0
+END; {$1}
+endsnippet
+
+snippet function "function declaration" b
+FUNCTION $1;
+BEGIN {$1}
+  $0
+END; {$1}
+endsnippet

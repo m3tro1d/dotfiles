@@ -3,7 +3,7 @@ snippet #inc "#include directive" b
 endsnippet
 
 snippet header "Header format" b
-#ifndef ${1:`!v toupper(expand("%:t:r"))`_H_}
+#ifndef ${1:`!v toupper(expand("%:t:r"))`_H}
 #define $1
 
 $0
