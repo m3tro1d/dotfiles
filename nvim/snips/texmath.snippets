@@ -65,12 +65,12 @@ snippet int "Undefined integral" i
 \\int $0
 endsnippet
 
-# Upper limits
-# snippet int "integral"
-# \\int\\limits_\{$1\}^\{$2\} $3 \\,\\mathrm\{d\}x
-# endsnippet
 snippet intd "Defined integral" i
-\\int_\{$1\}^\{$2\} $0
+\\int\\limits_\{$1\}^\{$2\} $0
+endsnippet
+
+snippet eval "Expression evaluation line" i
+\\left. $1 \\right|$0
 endsnippet
 
 snippet bb "Number set letter" i

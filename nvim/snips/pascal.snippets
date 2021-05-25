@@ -6,9 +6,9 @@ END. {$1}
 endsnippet
 
 snippet unit "unit block"
-UNIT $1
+UNIT $1;
 INTERFACE
-  $0
+$0
 
 IMPLEMENTATION
 
@@ -18,7 +18,7 @@ endsnippet
 
 snippet begin "begin-end block" b
 BEGIN
-  $0
+  ${0:${VISUAL}}
 END$1
 endsnippet
 
@@ -35,14 +35,14 @@ DO
 endsnippet
 
 snippet procedure "procedure declaration" b
-PROCEDURE $1;
+PROCEDURE $1($2);
 BEGIN {$1}
   $0
 END; {$1}
 endsnippet
 
 snippet function "function declaration" b
-FUNCTION $1;
+FUNCTION $1($2): $3;
 BEGIN {$1}
   $0
 END; {$1}

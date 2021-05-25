@@ -28,40 +28,37 @@ Plug 'sheerun/vim-polyglot'
 Plug 'nelsyeung/twig.vim'
 
 " Appearance
-Plug 'joshdick/onedark.vim'
 Plug 'itchyny/lightline.vim'
-Plug 'ap/vim-css-color', { 'for': 'css' }
-Plug 'gregsexton/MatchTag', { 'for': 'html' }
+Plug 'sainnhe/everforest'
+Plug 'mhinz/vim-startify'
 
 " Project management
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-rhubarb'
+Plug 'airblade/vim-gitgutter'
 Plug 'preservim/nerdtree', { 'on': 'NERDTreeToggle' }
 
 " Editing
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
-Plug 'vim-scripts/argtextobj.vim'
-Plug 'jiangmiao/auto-pairs'
+Plug 'wellle/targets.vim'
+Plug 'cohama/lexima.vim'
 Plug 'SirVer/ultisnips'
 Plug 'mattn/emmet-vim', { 'on': 'EmmetInstall' }
 
 " Miscellaneous utilities
 Plug 'tpope/vim-dispatch', { 'on': ['Make', 'Dispatch'] }
-Plug 'vimwiki/vimwiki'
-Plug 'ctrlpvim/ctrlp.vim'
-Plug 'terryma/vim-smooth-scroll'
+Plug 'ctrlpvim/ctrlp.vim', { 'on': 'CtrlP' }
+Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
+Plug 'junegunn/vim-easy-align', { 'on': '<Plug>(EasyAlign)' }
+Plug 'aserebryakov/vim-todo-lists'
 
 " Some colorschemes for alternating
+" Plug 'joshdick/onedark.vim'
 " Plug 'arcticicestudio/nord-vim'
 " Plug 'sainnhe/sonokai'
-" Plug 'drewtempelmeyer/palenight.vim'
-" Plug 'sainnhe/forest-night'
 " Plug 'sainnhe/gruvbox-material'
-
-" Plug 'vim-scripts/ReplaceWithRegister'
-" Plug 'cohama/lexima.vim'
 call plug#end()
 " }}}
 
@@ -108,7 +105,9 @@ set hidden
 " Ask if there are unsaved files
 set confirm
 " Longer updatetime (def: 4000 ms) leads to delays and poor UX
-set updatetime=50
+set updatetime=100
+" Waiting interval for the mapped commands
+set timeoutlen=500
 " Disable swap files
 set noswapfile
 " Disable backup files
@@ -118,8 +117,7 @@ set wildmenu wildignorecase
 set wildmode=longest,list,full
 set wildignore+=*.exe,*.o,*.obj
 set wildignore+=*/.git/*,*/__pycache__/*,*/node_modules/*
-" Don't show insert completion messages
-set shortmess+=c
+set wildignore+=*/var/*,*/vendor/*,*/public/build/*
 " Recursive :find in the current directory
 set path+=**
 " Don't jump to matching pairs
@@ -142,10 +140,12 @@ set nrformats=hex
 set exrc
 " Allow backspace in insert mode
 set backspace=indent,eol,start
-" Keeps the right amount of spaces when joining lines
+" Keeps only one whitespace when joining lines
 set nojoinspaces
 " Don't beep or flash on errors
 set noerrorbells novisualbell t_vb=
+" Change dir for the current file automatically
+" set autochdir
 " Reload file automatically if it was changed
 set autoread
 autocmd settings FocusGained,BufEnter * checktime
@@ -164,9 +164,10 @@ if has('termguicolors')
   set termguicolors
 endif
 set background=dark
-colorscheme onedark
-" Disable cursor blinking in UI
-set guicursor+=a:blinkon0
+let g:everforest_background = 'medium'
+colorscheme everforest
+" Disable cursor blinking in GUI
+" set guicursor+=a:blinkon0
 " Line numbering
 set number relativenumber
 " Show cursor position
@@ -177,10 +178,14 @@ set laststatus=2
 set mousehide
 " Height of the cmd line (bigger helps avoiding hit-enter prompt)
 set cmdheight=2
+" Smaller completion menu
+set pumheight=10
 " Show current commands in the bottom-right corner
 set showcmd
 " Don't show current mode in the command line
 set noshowmode
+" Highlight current line
+set cursorline
 " Set the window's title to the current filename
 set title titlestring=%{expand(\'%\')}
 " }}}
@@ -197,13 +202,15 @@ set ignorecase smartcase
 " Indentation {{{
 " Automatic indentation
 set autoindent
+" Use existing indentation settings in this file for new lines
+set copyindent
 " White spaces instead of tabs
 set expandtab
 " Number of spaces to be deleted and inserted with Backspace (negative to use shiftwidth)
 set softtabstop=-1
-" Number of spaces shifted with <, >, etc.
+" Number of spaces shifted with <, >
 set shiftwidth=2
-" Round the indentation to shiftwidth when shifting with <, >, etc.
+" Round the indentation to shiftwidth when shifting with <, >
 set shiftround
 " }}}
 
@@ -211,7 +218,7 @@ set shiftround
 " Don't automatically break lines
 set textwidth=0
 " Wrap text and break the lines by words
-set wrap linebreak
+set nowrap nolinebreak
 " Proper indentation for wrapped lines
 set breakindent
 set breakindentopt=shift:2
@@ -221,6 +228,8 @@ set showbreak=»
 set display+=lastline
 " Make 1 line above, below and sideways the cursor always visible
 set scrolloff=1 sidescrolloff=1
+" Turn off concealing by default
+set conceallevel=0
 " }}}
 
 " Mappings {{{
@@ -269,7 +278,9 @@ nnoremap <silent> [q :cprevious<CR>
 nnoremap <silent> ]Q :clast<CR>
 nnoremap <silent> [Q :cfirst<CR>
 " Toggle spell check
-nnoremap <silent> <leader>s :<C-u>setlocal spell!<CR>
+nnoremap <silent> <leader>s :setlocal spell!<CR>
+" Reload file in windows 1251
+nnoremap <F12> :e ++enc=cp1251<CR>
 " Comfortable editing in command mode
 cnoremap <C-A> <Home>
 cnoremap <C-E> <End>
@@ -305,7 +316,6 @@ function! QuickfixToggle() abort
       return
     endif
   endfor
-
   copen
 endfunction
 " }}}
@@ -333,7 +343,6 @@ function! CleanTrailings() abort
   silent! %s#\($\n\s*\)\+\%$##
   call setpos('.', save_cursor)
   call setreg('/', old_query)
-  echo 'Trailings cleared.'
 endfunction " }}}
 command! CleanTrailings call CleanTrailings()
 
@@ -351,6 +360,20 @@ function! PlaceholdersToggle() abort
 endfunction " }}}
 command! PlaceholdersToggle call PlaceholdersToggle()
 
+" Quickly change indentaion spaces amount {{{
+function! ChangeTabstops(current, new) abort
+  let &l:tabstop = a:current
+  let &l:shiftwidth = a:current
+  setlocal noexpandtab
+  retab!
+  let &l:tabstop = a:new
+  let &l:shiftwidth = a:new
+  setlocal expandtab
+  retab
+endf
+" }}}
+command! -nargs=* ChangeTabstops call ChangeTabstops(<f-args>)
+
 " Commands {{{
 " Soft-wrap the text for copying into the text processors
 command! -range=% SoftWrap
@@ -367,7 +390,7 @@ command! Scratch
 " Plugins settings {{{
 " lightline.vim {{{
 let g:lightline = {
-      \ 'colorscheme': 'onedark',
+      \ 'colorscheme': 'everforest',
       \ 'mode_map': { 'c': 'NORMAL' },
       \ 'active': {
       \   'left': [ [ 'keymap', 'mode', 'paste' ],
@@ -410,17 +433,19 @@ let NERDTreeWinSizeMax = 50
 let NERDTreeShowHidden = 1
 let NERDTreeNaturalSort = 1
 let NERDTreeMinimalUI = 1
-let NERDTreeCascadeSingleChildDir = 0
-let NERDTreeCascadeOpenSingleChildDir = 0
 let NERDTreeAutoDeleteBuffer = 1
-let NERDTreeIgnore = ['\.git$', 'node_modules$']
+let NERDTreeIgnore = [
+      \ '\.git$', 'node_modules$', '\.idea$'
+      \ ]
 let NERDTreeBookmarksFile = ''
 nnoremap <silent> <leader>nt :NERDTreeToggle<CR>
 nnoremap <silent> <leader>nf :NERDTreeFocus<CR>
+nnoremap <silent> <leader>nF :NERDTreeFind<CR>
 " }}}
 
-" NERDCommenter {{{
-let g:NERDSpaceDelims = 1
+" EasyAlign {{{
+xmap gl <Plug>(EasyAlign)
+nmap gl <Plug>(EasyAlign)
 " }}}
 
 " netrw {{{
@@ -439,25 +464,13 @@ endif
 command! Tags Dispatch! ctags --exclude=.git --exclude=node_modules --exclude=__pycache__ -R .
 " }}}
 
-" vimwiki {{{
-if has('win32')
-  let g:vimwiki_list = [{'path': 'D:\Documents\vimwiki\',
-        \ 'ext': '.wiki',
-        \ 'auto_diary_index': 1}]
-else
-  let g:vimwiki_list = [{'path': '~/Documents/vimwiki/',
-        \ 'ext': '.wiki',
-        \ 'auto_diary_index': 1}]
-endif
-let g:vimwiki_ext2syntax = {'.wiki': 'default'}
-" }}}
-
 " emmet-vim {{{
+let g:emmet_html5 = 0
 let g:user_emmet_install_global = 0
 let g:user_emmet_leader_key = '<C-z>'
 augroup emmet
   autocmd!
-  autocmd FileType html,css,pug,html.twig.js.css EmmetInstall
+  autocmd FileType html,css,pug,html.twig.js.css,php EmmetInstall
 augroup END
 " }}}
 
@@ -465,13 +478,54 @@ augroup END
 let g:ctrlp_match_current_file = 1
 let g:ctrlp_working_path_mode = 'wra'
 let g:ctrlp_mruf_max = 25
+nnoremap <silent> <C-p> :<C-u>CtrlP<CR>
 " }}}
 
-" vim-smooth-scroll {{{
-nnoremap <silent> <C-u> :call smooth_scroll#up(&scroll, 10, 2)<CR>
-nnoremap <silent> <C-d> :call smooth_scroll#down(&scroll, 10, 2)<CR>
-nnoremap <silent> <C-b> :call smooth_scroll#up(&scroll*2, 10, 4)<CR>
-nnoremap <silent> <C-f> :call smooth_scroll#down(&scroll*2, 10, 4)<CR>
+" fugitive {{{
+nmap <silent> <leader>gg :<C-u>Git<CR>
+" }}}
+
+" gitgutter {{{
+let g:gitgutter_map_keys = 0
+nmap ]h <Plug>(GitGutterNextHunk)
+nmap [h <Plug>(GitGutterPrevHunk)
+nmap <leader>gs <Plug>(GitGutterStageHunk)
+nmap <leader>gu <Plug>(GitGutterUndoHunk)
+nmap <leader>gp <Plug>(GitGutterPreviewHunk)
+" }}}
+
+" undotree {{{
+nnoremap <leader>ut :UndotreeToggle<CR>
+nnoremap <leader>uf :UndotreeFocus<CR>
+let g:undotree_WindowLayout = 2
+" }}}
+
+" startify {{{
+let g:startify_session_dir = $VIMCONF . '/session'
+let g:startify_files_number = 5
+let g:startify_change_to_dir = 1
+let g:startify_change_to_vcs_root = 1
+let g:startify_change_cmd = 'tcd'
+let g:startify_lists = [
+      \ { 'type': 'files',     'header': ['   MRU']            },
+      \ { 'type': 'dir',       'header': ['   MRU '. getcwd()] },
+      \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
+      \ { 'type': 'sessions',  'header': ['   Sessions']       },
+      \ { 'type': 'commands',  'header': ['   Commands']       },
+      \ ]
+let g:startify_bookmarks = [
+      \ {'c': $MYVIMRC},
+      \ {'m': 'C:\Users\gnutella\AppData\Roaming\mpv\mpv.conf'},
+      \ ]
+let g:startify_commands = [
+    \ {'h': ['Quick reference', 'h quickref']},
+    \ {'u': ['Update plugins', 'PlugUpdate']},
+    \ ]
+let g:startify_skiplist = [
+      \ '\\\.git\\',
+      \ 'runtime\\doc\\.*\.txt$',
+      \ 'plugged\\.*\\doc\\.*\.txt$',
+      \ ]
 " }}}
 " }}}
 
@@ -495,6 +549,7 @@ let g:tex_flavor = 'latex'
 augroup gitcommit " {{{
   autocmd!
   autocmd FileType gitcommit setlocal textwidth=72
+  autocmd FileType gitcommit setlocal formatoptions+=t
   autocmd FileType gitcommit setlocal spell
 augroup END " }}}
 
@@ -531,10 +586,17 @@ augroup dosbatch " {{{
   autocmd FileType dosbatch setlocal fileformat=dos
 augroup END " }}}
 
+augroup php " {{{
+  autocmd!
+  autocmd FileType php setlocal shiftwidth=4
+augroup END " }}}
+
 augroup pascal " {{{
   autocmd!
-  autocmd FileType pascal setlocal makeprg=gpc\ %\ -o\ %:t:r
+  " autocmd FileType pascal setlocal makeprg=gpc\ %\ -o\ %:t:r
   autocmd FileType pascal setlocal errorformat+=%f(%l\\,%c)\ %m,%-G%.%#
+  autocmd FileType pascal setlocal commentstring={%s}
+  autocmd FileType pascal command! FindExtraSemicolons execute 'vimgrep /\v;\n?\s*(END|UNTIL)/ **/*.pas'
 augroup END " }}}
 " }}}
 
