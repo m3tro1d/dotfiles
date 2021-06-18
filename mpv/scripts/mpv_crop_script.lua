@@ -3165,7 +3165,7 @@ asscropper.overlay_lightness = option_values.overlay_lightness
 asscropper.tick_callback = on_tick_listener
 mp.register_event("tick", on_tick_listener)
 
-local used_keybind = SCRIPT_KEYBIND
+local used_keybind = 'C'
 -- Disable the default keybind if asked to
 if option_values.disable_keybind then
   used_keybind = nil

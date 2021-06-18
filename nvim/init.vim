@@ -23,9 +23,10 @@ if !isdirectory($VIMCONF . '/plugged')
   call mkdir($VIMCONF . '/plugged', 'p')
 endif
 call plug#begin($VIMCONF . '/plugged')
-" Syntax
+" Syntax & languages
 Plug 'sheerun/vim-polyglot'
 Plug 'nelsyeung/twig.vim'
+Plug 'fatih/vim-go', { 'for': 'go' }
 
 " Appearance
 Plug 'itchyny/lightline.vim'
